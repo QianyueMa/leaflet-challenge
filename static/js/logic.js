@@ -29,6 +29,7 @@ function createFeatures(earthquakeData) {
 
     // Define function to set the circle color based on the magnitudes according to the reference map screenshot
     //Earthquakes with higher magnitudes should appear larger and darker in color.
+    // colouring tool https://colorbrewer2.org/#type=diverging&scheme=RdYlGn&n=6
     function circleColor(magnitude) {
         if (magnitude < 1) {
           return "#ccff33"
@@ -67,73 +68,84 @@ function createFeatures(earthquakeData) {
     createMap(earthquakes);
 }
 
+
 // Create a map using Leaflet that plots all of the earthquakes from your data set based on their longitude and latitude.
 function createMap(earthquakes) {
 
-  // Define streetmap and darkmap layers
-  var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
-    tileSize: 512,
-    maxZoom: 18,
-    zoomOffset: -1,
-    id: "mapbox/streets-v11",
-    accessToken: API_KEY
-  });
+    // Define streetmap and darkmap layers
+    var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+        maxZoom: 18,
+        id: "mapbox/streets-v11",
+        accessToken: API_KEY
+    });
 
-  var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-    maxZoom: 18,
-    id: "dark-v10",
-    accessToken: API_KEY
-  });
+    var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "light-v10",
+        accessToken: API_KEY
+    });
 
-  // Define a baseMaps object to hold our base layers
-  var baseMaps = {
-    "Street Map": streetmap,
-    "Dark Map": darkmap
-  };
+    // Define a baseMaps object to hold our base layers
+    var baseMaps = {
+        "Street Map": streetmap,
+        "Light Map": lightmap
+    };
 
-  // Create overlay object to hold our overlay layer
-  var overlayMaps = {
-    Earthquakes: earthquakes
-  };
+    // Create overlay object to hold our overlay layer
+    var overlayMaps = {
+        Earthquakes: earthquakes
+    };
 
-  // Create our map, giving it the streetmap and earthquakes layers to display on load
-  var myMap = L.map("map", {
-    center: [
-      37.09, -95.71
-    ],
-    zoom: 5,
-    layers: [streetmap, earthquakes]
-  });
+    // Create our map, giving it the streetmap and earthquakes layers to display on load
+    var myMap = L.map("map", {
+        // the center's coordinates are of the US's
+        center: [40.09, -99.71],
+        zoom: 5,
+        layers: [lightmap, earthquakes]
+    });
 
-  // Create a layer control
-  // Pass in our baseMaps and overlayMaps
-  // Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(myMap);
+    // Create a layer control
+    // Pass in our baseMaps and overlayMaps
+    // Add the layer control to the map
+    L.control.layers(baseMaps, overlayMaps, {
+        collapsed: false
+    }).addTo(myMap);
 
-  // Create a legend that will provide context for the map data.
-  var legend = L.control({ position: 'bottomright' });
 
-    legend.onAdd = function (map) {
+    // Create a legend that will provide context for the map data.
+    
+    // Adding Some Color (https://leafletjs.com/examples/choropleth/)
+    function getColor(d) {
+        return d > 5 ? '#ff3333' :
+               d > 4  ? '#ff6633' :
+               d > 3  ? '#ff9933' :
+               d > 2  ? '#ffcc33' :
+               d > 1  ? '#ffff33' :
+                        '#ccff33';
+      }
+    
+    // Custom Legend Control (https://leafletjs.com/examples/choropleth/)
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function(i) {
 
         var div = L.DomUtil.create('div', 'info legend'),
-            magnitude = [0, 1, 2, 3, 4, 5],
+            grades = [0, 1, 2, 3, 4, 5],
             labels = [];
 
-        div.innerHTML += "<h4 style='margin:4px'>Magnitude</h4>"
-
-        for (var i = 0; i < magnitude.length; i++) {
+        for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
-                '<i style="background:' + Color(magnitude[i] + 1) + '"></i> ' +
-                magnitude[i] + (magnitude[i + 1] ? '&ndash;' + magnitude[i + 1] + '<br>' : '+');
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
         }
-
         return div;
     };
-    legend.addTo(mymap);
+
+    // also add the CSS styles for the control 
+
+    legend.addTo(myMap);
 
 }
 
