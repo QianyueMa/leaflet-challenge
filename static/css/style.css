@@ -9,6 +9,10 @@ html {
   height: 100%;
 }
 
+#mapid { 
+  height: 180px; 
+}
+
 .legend {
   line-height: 18px;
   color: #555;

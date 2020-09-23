@@ -35,11 +35,35 @@ Welcome to the United States Geological Survey, or USGS for short! The USGS is r
 
 ![5-Advanced](Images/5-Advanced.png)
 
-The USGS wants to plot a second dataset on your map to illustrate the relationship between tectonic plates and seismic activity. Pull in a second data set and visualize it along side your original set of data. Data on tectonic plates can be found at <https://github.com/fraxen/tectonicplates>.
+The USGS wants to plot a second dataset on your map to illustrate the relationship between tectonic plates and seismic activity. Pull in a second data set and visualize it along side your original set of data. Data on tectonic plates can be found at <https://github.com/fraxen/tectonicplates>, with the direct access from the [GitHub page here](https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json).
 
 In this step,
 
 * Plot a second data set on our map.
 * Add a number of base maps to choose from as well as separate out our two different data sets into overlays that can be turned on and off independently.
 * Add layer controls to our map.
+
+### Level 3: Time Keeps on Ticking (Optional)
+
+![7-NotGif](Images/6-Time_Keeps_On_Ticking.gif)
+
+Many people don't know how much seismic activity is happening around them all the time. Did you know that Southern California has over 10,000 earthquakes each year alone? The USGS wants to create a map that will visualize just how many earthquakes happen over the course of a day/week.
+
+* Use a Leaflet plugin (they can be found at <http://leafletjs.com/plugins.html>) to visualize the earthquakes as it takes place over a period of time.
+
+- - -
+
+### Level 4: Above and Beyond (Optional)
+
+So excited to be in this new position and really want to do something that will blow them away! So, two new ideas of ways to go above and beyond:
+
+* Find another set of geospatial data that can be used to show a new correlation or insight about the existing earthquake data.
+
+* Use additional plug-ins from the [Leaflet Documentation](http://leafletjs.com/plugins.html) to further visualize our data in a unique way.
+
+  * Heatmap
+    ![Heat](Images/Heat.png)
+
+  * Data Clustering
+    ![Cluster](Images/Cluster.png)
 
